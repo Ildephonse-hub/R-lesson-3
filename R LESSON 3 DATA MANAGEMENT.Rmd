@@ -1,0 +1,94 @@
+---
+title: "R LESS 3"
+author: "Ildephonse IGIRUKWAYO"
+date: "2025-10-16"
+output: html_document
+---
+
+```{r error= TRUE, setup, include=FALSE, echo=TRUE}
+
+```
+
+---
+treatment <- c(12,0,26,217,104,57,12,47,23,20)
+plot(Confirmed_covid, type="l", pch=21, col="red", ylim=c(0,350), xaxt="n", ylab="Number of patients", main="Confirmed cases Vs treatment")
+lines(treatment, col="blue", lty=2)
+legend("topleft", legend=c("Received treatment", "Confirmed"), cex=0.5, fill=c("blue","red"))
+axis(1, at=1:10, labels=months)
+```
+
+
+## Using ggplot2
+
+
+```{r ggplot_example, echo=TRUE}
+data(mtcars)
+mtcars$cyl <- factor(mtcars$cyl)
+mtcars$am <- factor(mtcars$am, levels=c(0,1), labels=c("Automatic","Manual"))
+mtcars$vs <- factor(mtcars$vs, levels=c(0,1), labels=c("V-Engine","Straight Engine"))
+
+
+# Scatter plot with regression
+f0 <- ggplot(data=mtcars, aes(x=wt, y=mpg)) + geom_point(shape=24, size=2) + geom_smooth(method="lm", color="blue")
+f0 + theme_bw() + theme(panel.grid = element_line(linetype="dotted", color="black"))
+```
+
+
+## Data Management - dplyr
+
+
+```{r dplyr_examples, echo=TRUE}
+# Filtering flights data
+jan <- filter(flights, month==1)
+dec25 <- filter(flights, month==12, day==25)
+
+
+# Arranging
+arranged <- arrange(flights, desc(arr_delay))
+
+
+# Selecting columns
+selected <- select(flights, year:day)
+
+
+# Adding new variable
+flights2 <- select(flights, year:day, ends_with("delay"), distance, air_time)
+flights2 <- mutate(flights2, gain=arr_delay-dep_delay, speed=distance/air_time*60)
+```
+
+
+## Handling Missing Values and Subsetting
+
+
+```{r handling_missing, echo=TRUE}
+manager <- c(1,2,3,4,5)
+country <- c("US","US","UK","UK","UK")
+gender <- c("M","F","F","M","F")
+age <- c(32,45,25,39,99)
+q1 <- c(5,3,3,3,2)
+q2 <- c(4,5,5,3,2)
+q3 <- c(5,2,5,4,1)
+q4 <- c(5,5,5,NA,2)
+q5 <- c(5,5,2,NA,1)
+
+
+leadership <- data.frame(manager, country, gender, age, q1,q2,q3,q4,q5)
+
+
+# Replace 99 with NA
+leadership$age[leadership$age==99] <- NA
+
+
+# Create age categories
+leadership$agecat <- NA
+leadership$agecat[leadership$age > 75] <- "Elder"
+leadership$agecat[leadership$age >=35 & leadership$age <=75] <- "Middle Aged"
+leadership$agecat[leadership$age < 35] <- "Young"
+
+
+# Remove missing values
+newdata <- na.omit(leadership)
+```
+
+
+This R Markdown document contains all your data management and visualization examples from Dr. Pacifique's lecture.
